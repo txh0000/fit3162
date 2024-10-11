@@ -26,40 +26,32 @@
 
           <div class="container">
             <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>    
+                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>    
             </div>
             <div class="container m-3">
-                <h1 class="display-6">Step 1</h1>
+                <h1 class="display-6">Step 2</h1>
                 <p class="lead">
-                    To generate a music video, we need a music file to decompose it. Please provide a valid audio format to
-                    complete the process.
+                    Next up! We need an avatar image that allows us to generate a lively avatar that follow
+                    the beat! Drop an image to proceed to the final step!
                 </p>
             </div>
             
-            <!-- Upload audio -->
+            <!-- Upload image -->
             <form method="POST" action="" enctype="multipart/form-data">
-                <label for="formFile" class="form-label">Input an audio file here:</label>
-                <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3, .wav, .flac"></p>
+                <label for="formFile" class="form-label">Default file input example</label>
+                <p><input class="form-control" type="file" name="file" id="formFile" accept=".png, .jpg, .jpeg"></p>
 
                 <p><input type="submit" class="btn btn-primary"></p>
             </form>
 
             <hr>
 
-            <!-- Show audio player -->
+            <!-- Show image -->
             {% if filename %}
             <div class="text-center">
-                <h3>Audio Preview:</h3>
-                <audio controls>
-                  <source src="{{url_for('upload', file = filename)}}" type="audio/mpeg">
-                  Your browser does not support the audio element.
-                </audio>                
-            </div>
-            
-            <div class="d-grid gap-2">
-              <a href="{{ url_for("step2") }}" class="btn btn-primary" type="button">Next</a>
-            </div>
+                <img src="{{ url_for('upload', file = filename) }}" alt="Audio Image" class="img-fluid mb-3" style="max-width: 200px;">
             {% endif %}
+            </div>
           </div>
         
           
