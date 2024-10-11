@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"  data-bs-theme="dark">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+        {{ bootstrap.load_css() }}
+
+        <title>Avatar Model Generator</title>
+    </head>
+    <body>
+        <div class="container">
+            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+              <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">Avatar Model Generator</span>
+              </a>
+        
+              <ul class="nav nav-pills">
+                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
+              </ul>
+            </header>
+          </div>
+
+          <div class="container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>    
+            </div>
+            <div class="container m-3">
+                <h1 class="display-6">Step 1</h1>
+                <p class="lead">
+                    To generate a music video, we need a music file to decompose it. Please provide a valid audio format to
+                    complete the process.
+                </p>
+            </div>
+            
+            <!-- Upload audio -->
+            <form method="POST" action="" enctype="multipart/form-data">
+                <label for="formFile" class="form-label">Default file input example</label>
+                <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3, .wav, .flac"></p>
+
+                <p><input type="submit" class="btn btn-primary"></p>
+            </form>
+
+            <hr>
+
+            <!-- Show audio player -->
+            {% if uploaded_file %}
+            <div class="text-center">
+                <h3>Audio Preview:</h3>
+                <audio controls>
+                    <source src="{{ url_for('static', filename='uploads/track.mp3') }}" type="audio/{{ uploaded_file.split('.')[-1] }}">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            {% endif %}
+          </div>
+        
+          
+    </body>
+</html>

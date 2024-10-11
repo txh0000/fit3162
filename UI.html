@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3-Step Progress Bar UI</title>
+    <style>
+        /* General Page Style */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        /* Progress Bar Container */
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 50%;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        /* Line Between Dots */
+        .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #ccc;
+            z-index: 0;
+        }
+
+        /* Dots on the Progress Bar */
+        .progress-dot {
+            width: 20px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            color: white;
+        }
+
+        /* Active State for Dots */
+        .active {
+            background-color: #4caf50;
+        }
+
+        /* Next Button */
+        .next-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .next-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Image Block */
+        .image-block, .audio-block {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .image-block img {
+            max-width: 300px;
+            max-height: 300px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: white;
+        }
+
+        .audio-block audio {
+            margin-top: 10px;
+        }
+
+        /* Show the active content */
+        .show {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-line"></div>
+        <div class="progress-dot active" id="step1">1</div>
+        <div class="progress-dot" id="step2">2</div>
+        <div class="progress-dot" id="step3">3</div>
+    </div>
+
+    <!-- Content for each step -->
+    <div class="container">
+        <!-- Step 1: Image Block -->
+        <div class="image-block show" id="content-step1">
+            <label for="image-input">Upload Image:</label>
+            <input type="file" id="image-input" accept="image/*">
+            <img id="image-display" src="#" alt="Image will appear here">
+        </div>
+
+        <!-- Step 2: Audio Block -->
+        <div class="audio-block" id="content-step2">
+            <label for="audio-input">Upload Audio:</label>
+            <input type="file" id="audio-input" accept="audio/*">
+            <audio id="audio-player" controls>
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <!-- Step 3: Final Step (Optional content) -->
+        <div class="final-block" id="content-step3">
+            <!-- <h3>Step 3: Complete</h3>
+            <p>You have successfully completed the steps!</p> -->
+        </div>
+    </div>
+
+    <!-- Next Button -->
+    <button class="next-btn" id="next-btn">Next</button>
+
+    <!-- JavaScript -->
+    <script>
+        let currentStep = 1;
+
+        const nextBtn = document.getElementById('next-btn');
+        const steps = document.querySelectorAll('.progress-dot');
+        const contentSteps = [
+            document.getElementById('content-step1'),
+            document.getElementById('content-step2'),
+            document.getElementById('content-step3')
+        ];
+
+        // Update the progress bar to show the current step
+        function updateProgressBar() {
+            steps.forEach((step, index) => {
+                if (index < currentStep) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+
+            // Show only the relevant content for the current step
+            contentSteps.forEach((content, index) => {
+                if (index === currentStep - 1) {
+                    content.classList.add('show');
+                } else {
+                    content.classList.remove('show');
+                }
+            });
+
+            // Disable the "Next" button if at the last step
+            if (currentStep === steps.length) {
+                nextBtn.disabled = true;
+            }
+        }
+
+        // Move to the next step when "Next" is clicked
+        nextBtn.addEventListener('click', async function() {
+            if (currentStep === 1) {
+                if (!imageFile) {
+                    alert("Please upload an image before proceeding.");
+                    return;
+                }
+            }
+
+            if (currentStep === 2) {
+                if (!audioFile) {
+                    alert("Please upload an audio file before proceeding.");
+                    return;
+                }
+
+                // Upload the files to Colab before moving to step 3
+                await uploadToColab();
+            }
+
+            // Only move to the next step if validation passes
+            if (currentStep < steps.length) {
+                currentStep++;
+                updateProgressBar();
+            }
+        });
+
+        // Initial call to set up the progress bar
+        updateProgressBar();
+
+        // Image Upload and Display
+        const imageInput = document.getElementById('image-input');
+        const imageDisplay = document.getElementById('image-display');
+        let imageFile = null;
+
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                imageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imageDisplay.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Audio Upload and Play
+        const audioInput = document.getElementById('audio-input');
+        const audioPlayer = document.getElementById('audio-player');
+        let audioFile = null;
+
+        audioInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                audioFile = file;
+                const audioURL = URL.createObjectURL(file);
+                audioPlayer.src = audioURL;
+                audioPlayer.play();
+            }
+        });
+
+        // Upload files to Colab
+        async function uploadToColab() {
+            if (!imageFile || !audioFile) {
+                alert("Please upload both an image and audio file.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+            formData.append('audio', audioFile);
+
+            try {
+                const response = await fetch('YOUR_NGROK_URL/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    console.log('Files uploaded successfully:', result);
+                } else {
+                    alert('Error uploading files:', result.error);
+                }
+            } catch (error) {
+                console.error('Error during upload:', error);
+                alert('Error uploading files. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+}
+
+/* Progress Bar Container */
+.progress-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 50%;
+    margin: 20px 0;
+    position: relative;
+}
+
+/* Line Between Dots */
+.progress-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #ccc;
+    z-index: 0;
+}
+
+/* Dots on the Progress Bar */
+.progress-dot {
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 50%;
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: white;
+}
+
+/* Active State for Dots */
+.active {
+    background-color: #4caf50;
+}
+
+/* Next Button */
+.next-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.next-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Image Block */
+.image-block, .audio-block {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+}
+
+.image-block img {
+    max-width: 300px;
+    max-height: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+}
+
+.audio-block audio {
+    margin-top: 10px;
+}
+
+/* Show the active content */
+.show {
+    display: flex;
+}
