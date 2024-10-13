@@ -37,27 +37,42 @@
             </div>
             
             <!-- Upload audio -->
-            <form method="POST" action="" enctype="multipart/form-data">
+            {% if not audio_file %}
+            <form method="POST" onSubmit="() => load_audio()" action="" enctype="multipart/form-data">
                 <label for="formFile" class="form-label">Input an audio file here:</label>
-                <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3, .wav, .flac"></p>
+                <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3"></p>
 
                 <p><input type="submit" class="btn btn-primary"></p>
             </form>
-
+            {% endif %}
             <hr>
 
-            <!-- Show audio player -->
-            {% if filename %}
-            <div class="text-center">
-                <h3>Audio Preview:</h3>
-                <audio controls>
-                  <source src="{{url_for('upload', file = filename)}}" type="audio/mpeg">
-                  Your browser does not support the audio element.
-                </audio>                
+            <!-- Show audio player -->               
             </div>
-            
-            <div class="d-grid gap-2">
-              <a href="{{ url_for("step2") }}" class="btn btn-primary" type="button">Next</a>
+
+            {% if audio_file %}
+            <div class="text-center">
+              <p class="lead">
+                You uploaded an audio file! Use the audio player to check if it's the correct audio.  
+                <br /> 
+                Otherwise click on the remove button to upload again.
+              </p>
+              <h3>Audio Preview:</h3>
+              <audio id="audio_player" controls>  
+                <source id="mp3_src" src="{{ audio_file }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio> 
+
+              <script>
+                  console.log("check")
+                  document.getElementById('mp3_src').src = "{{ audio_file }}"
+                  document.getElementById('audio_player').load() ;
+              </script>
+
+              <p><a href="{{ url_for('remove', file = 'track.mp3') }}" onclick="() => load_audio()" class="btn btn-danger">Remove</a></p> 
+              <div class="d-grid gap-2">
+                <a href="{{ url_for("step2") }}" class="btn btn-primary" type="button">Next</a>
+              </div>
             </div>
             {% endif %}
           </div>

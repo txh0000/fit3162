@@ -5,17 +5,17 @@ import os
 
 app = Flask(__name__, static_url_path='', static_folder = 'static')
 app._static_folder = '/content/static'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = 'uploads'
 
 bootstrap = Bootstrap5(app)
 
+# First page of the website
+# A page that allows user to upload an audio file into the local file.
 @app.route("/")
 def index():
-    print(os.path.exists('static/uploads/track.mp3'))
-    if os.path.exists('static/uploads/track.mp3'):
-        return render_template('index.html', filename = 'track.mp3')
-    else: 
-        return render_template('index.html')
+    is_audio_file_exist = os.path.exists('uploads/track.mp3')
+    print(is_audio_file_exist)
+    return render_template('index.html', audio_file = is_audio_file_exist)
     
 @app.route('/step2')
 def step2(): 
@@ -24,8 +24,13 @@ def step2():
     else: 
         return render_template('step2.html')
 
-@app.route("/", methods = ['POST'])
+@app.route("/", methods = ['GET', 'POST'])
 def upload_file(): 
+
+    path = 'static/uploads/track.mp3'
+    # Remove the file if the audio file exist
+    if os.path.exists(path):
+        os.remove(path)
 
     uploaded_file = request.files['file']
     file_extension = uploaded_file.filename.split('.')[-1]
@@ -34,7 +39,10 @@ def upload_file():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'track.' + file_extension)
         uploaded_file.save(filepath)
         print(f"File saved at: {filepath}")
-    return redirect(url_for('index'))
+        
+        return render_template('index.html', audio_file = url_for('upload', file = 'track.mp3'))
+    return render_template('index.html', audio_file = None)
+    
 
 @app.route("/step2", methods = ['POST'])
 def upload_image(): 
@@ -46,12 +54,38 @@ def upload_image():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'avatar.' + file_extension)
         uploaded_file.save(filepath)
         print(f"File saved at: {filepath}")
-    return redirect(url_for('step2'))
+        return render_template('step2.html', filename = url_for('upload', file = 'avatar.png'))
+    return render_template('step2.html', filename = None)
 
 @app.route('/uploads/<file>')
 def upload(file):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], file)
+    print("upload")
+    return send_from_directory(app.config['UPLOAD_FOLDER'], file, max_age = 0)
+
+@app.route('/remove/<file>')
+def remove(file):
+    print("Removing")
+
+    os.remove(app.config['UPLOAD_FOLDER'] + "/" + file)
+    return redirect(url_for('index'))
+
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 if __name__ == "__main__": 
-    from werkzeug.serving import run_simple
-    run_simple("127.0.0.1", 5000, app.run(debug=True))
+
+    # Create an upload folder if the folder doesn't exist
+    if not os.path.exists('uploads'):
+        path = os.path.join(os.path.dirname(__file__), 'uploads')
+        os.mkdir(path)
+
+    app.run(debug=True)
