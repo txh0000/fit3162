@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from flask_bootstrap import Bootstrap5  
 
 import os
+import subprocess
+import glob
 
 app = Flask(__name__, static_url_path='', static_folder = 'static')
 app._static_folder = '/content/static'
@@ -26,17 +28,28 @@ def step2():
     
 @app.route('/step3')
 def step3(): 
+    # selected audio from exmaple/driven_audio
+    img = './uploads/avatar.png'
+    audio = './uploads/track.mp3'
+
+    cmd = f"python3.8 inference.py --driven_audio {img} " \
+          f"--source_image {audio} --result_dir ./result --still --preprocess full --enhancer gfpgan"
+    subprocess.run(cmd, shell=True)
+
     print("compile")
     path = os.path.join(os.path.dirname(__file__), 'result')
 
     if not os.path.exists('result'):
         os.mkdir(path)
 
+
     print("Processing")
-    while not os.path.exists(os.path.join(path, 'result.mp4')):
+    while not glob.glob('./result/*.mp4'):
         pass
+
+    mp4_name = glob.glob('./result/*.mp4')[0]
     
-    return render_template('step3.html', filename = 'result.mp4')
+    return render_template('step3.html', filename = mp4_name)
 
 
 @app.route("/", methods = ['GET', 'POST'])
