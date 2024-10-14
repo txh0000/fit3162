@@ -23,6 +23,21 @@ def step2():
         return render_template('step2.html', filename = 'avatar.png')
     else: 
         return render_template('step2.html')
+    
+@app.route('/step3')
+def step3(): 
+    print("compile")
+    path = os.path.join(os.path.dirname(__file__), 'result')
+
+    if not os.path.exists('result'):
+        os.mkdir(path)
+
+    print("Processing")
+    while not os.path.exists(os.path.join(path, 'result.mp4')):
+        pass
+    
+    return render_template('step3.html', filename = 'result.mp4')
+
 
 @app.route("/", methods = ['GET', 'POST'])
 def upload_file(): 
@@ -57,6 +72,7 @@ def upload_image():
         return render_template('step2.html', filename = url_for('upload', file = 'avatar.png'))
     return render_template('step2.html', filename = None)
 
+
 @app.route('/uploads/<file>')
 def upload(file):
     print("upload")
@@ -68,6 +84,11 @@ def remove(file):
 
     os.remove(app.config['UPLOAD_FOLDER'] + "/" + file)
     return redirect(url_for('index'))
+
+@app.route('/result/<file>')
+def result(file):
+    print("result")
+    return send_from_directory('result', file, max_age = 0)
 
 @app.after_request
 def add_header(r):

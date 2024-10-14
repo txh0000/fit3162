@@ -50,6 +50,9 @@
             {% if filename %}
             <div class="text-center">
                 <img src="{{ filename }}" alt="image" class="img-fluid mb-3" style="max-width: 200px;">
+                <div class="d-grid gap-2">
+                  <a href="{{ url_for("step3") }}" class="btn btn-primary" type="button">Next</a>
+                </div>
             {% endif %}
             </div>
           </div>
