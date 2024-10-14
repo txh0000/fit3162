@@ -28,26 +28,32 @@ def step2():
     
 @app.route('/step3')
 def step3(): 
-    # selected audio from exmaple/driven_audio
-    img = './uploads/avatar.png'
-    audio = './uploads/track.mp3'
 
-    cmd = f"python3.8 inference.py --driven_audio {img} " \
-          f"--source_image {audio} --result_dir ./result --still --preprocess full --enhancer gfpgan"
-    subprocess.run(cmd, shell=True)
+    if not os.path.exists('result'):
+        os.mkdir(path)
+    # selected audio from exmaple/driven_audio
+    img = '../fit3162/uploads/avatar.png'
+    audio = '../fit3162/uploads/track.mp3'
+
+    os.chdir('..')
+    os.chdir('SadTalker')
+
+    cmd = f"python3.8 inference.py --driven_audio {audio} " \
+          f"--source_image {img} --result_dir ../fit3162/result --still --preprocess full --enhancer gfpgan"
+
+    popen = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
 
     print("compile")
     path = os.path.join(os.path.dirname(__file__), 'result')
 
-    if not os.path.exists('result'):
-        os.mkdir(path)
-
-
     print("Processing")
-    while not glob.glob('./result/*.mp4'):
+    while not glob.glob('../fit3162/result/*.mp4'):
         pass
 
-    mp4_name = glob.glob('./result/*.mp4')[0]
+    os.chdir('..')
+    os.chdir('fit3162')
+
+    mp4_name = glob.glob('./result/*.mp4')[0].split('/')[-1]
     
     return render_template('step3.html', filename = mp4_name)
 
