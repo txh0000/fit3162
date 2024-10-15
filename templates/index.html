@@ -1,82 +1,80 @@
 <!doctype html>
 <html lang="en"  data-bs-theme="dark">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Bootstrap CSS -->
-        {{ bootstrap.load_css() }}
+      <!-- Bootstrap CSS -->
+      {{ bootstrap.load_css() }}
 
-        <title>Avatar Model Generator</title>
-    </head>
-    <body>
-        <div class="container">
-            <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
-              <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                <span class="fs-4">Avatar Model Generator</span>
-              </a>
-        
-              <ul class="nav nav-pills">
-                <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-              </ul>
-            </header>
+      <title>Avatar Model Generator</title>
+  </head>
+  <body>
+      <div class="container">
+
+          <!-- Header of the app -->
+          <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+              <svg class="bi me-2" width="40" height="32"><use xlink:href="{{ url_for("index") }}"></use></svg>
+              <span class="fs-4">Avatar Model Generator</span>
+            </a>
+      
+            <ul class="nav nav-pills">
+              <li class="nav-item"><a href="{{ url_for("index") }}" class="nav-link active" aria-current="page">Home</a></li>
+            </ul>
+          </header>
+
+          <!-- Progress Bar -->
+          <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>    
           </div>
 
-          <div class="container">
-            <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>    
-            </div>
-            <div class="container m-3">
-                <h1 class="display-6">Step 1</h1>
-                <p class="lead">
-                    To generate a music video, we need a music file to decompose it. Please provide a valid audio format to
-                    complete the process.
-                </p>
-            </div>
-            
-            <!-- Upload audio -->
-            {% if not audio_file %}
-            <form method="POST" onSubmit="() => load_audio()" action="" enctype="multipart/form-data">
-                <label for="formFile" class="form-label">Input an audio file here:</label>
-                <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3"></p>
-
-                <p><input type="submit" class="btn btn-primary"></p>
-            </form>
-            {% endif %}
-            <hr>
-
-            <!-- Show audio player -->               
-            </div>
-
-            {% if audio_file %}
-            <div class="text-center">
+          <!-- Description for the first step -->
+          <div class="container m-3">
+              <h1 class="display-6">Step 1</h1>
               <p class="lead">
-                You uploaded an audio file! Use the audio player to check if it's the correct audio.  
-                <br /> 
-                Otherwise click on the remove button to upload again.
+                  To generate a music video, we need a music file to decompose it. Please provide a valid audio format to
+                  complete the process.
               </p>
-              <h3>Audio Preview:</h3>
-              <audio id="audio_player" controls>  
-                <source id="mp3_src" src="{{ audio_file }}" type="audio/mpeg">
-                Your browser does not support the audio element.
-              </audio> 
-
-              <script>
-                  console.log("check")
-                  document.getElementById('mp3_src').src = "{{ audio_file }}"
-                  document.getElementById('audio_player').load() ;
-              </script>
-
-              <p><a href="{{ url_for('remove', file = 'track.mp3') }}" onclick="() => load_audio()" class="btn btn-danger">Remove</a></p> 
-              <div class="d-grid gap-2">
-                <a href="{{ url_for("step2") }}" class="btn btn-primary" type="button">Next</a>
-              </div>
-            </div>
-            {% endif %}
           </div>
-        
-          
-    </body>
+
+          <!-- Upload audio -->
+          {% if not audio_file %}
+          <form method="POST" onSubmit="() => load_audio()" action="" enctype="multipart/form-data">
+              <label for="formFile" class="form-label">Input an audio file here:</label>
+              <p><input class="form-control" type="file" name="file" id="formFile" accept=".mp3"></p>
+
+              <p><input type="submit" class="btn btn-primary"></p>
+          </form>
+          {% endif %}
+
+          <hr>
+
+          <!-- Show audio player -->               
+          {% if audio_file %}
+          <div class="text-center">
+
+            <p class="lead">
+              You uploaded an audio file! Use the audio player to check if it's the correct audio.  
+              <br /> 
+              Otherwise click on the remove button to upload again.
+            </p>
+
+            <h3>Audio Preview:</h3>
+
+            <audio id="audio_player" controls>  
+              <source id="mp3_src" src="{{ audio_file }}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio> 
+
+            <p><a href="{{ url_for('remove', file = 'track.mp3') }}" onclick="() => load_audio()" class="btn btn-danger">Remove</a></p> 
+            <div class="d-grid gap-2">
+              <a href="{{ url_for("step2") }}" class="btn btn-primary" type="button">Next</a>
+            </div>
+          </div>
+          {% endif %}
+
+        </div>      
+  </body>
 </html>
