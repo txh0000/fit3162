@@ -28,7 +28,7 @@ def step2():
     
 @app.route('/step3')
 def step3(): 
-
+    path = os.path.join(os.path.dirname(__file__), 'result')
     if not os.path.exists('result'):
         os.mkdir(path)
     # selected audio from exmaple/driven_audio
@@ -44,8 +44,6 @@ def step3():
     popen = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
 
     print("compile")
-    path = os.path.join(os.path.dirname(__file__), 'result')
-
     print("Processing")
     while not glob.glob('../fit3162/result/*.mp4'):
         pass
